@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>BrianDEV — Portfolio</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Epilogue:wght@500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#ffffff",
+            background: "#ffffff",
+            "surface-subtle": "#fafafa",
+            "surface-border": "#e5e5e5",
+            "surface-card": "#ffffff",
+            primary: "#000000",
+            "on-surface": "#000000",
+            "on-surface-muted": "#525252",
+            "on-surface-subtle": "#737373",
+            accent: "#000000"
+          },
+          fontFamily: {
+            sans: ["Geist", "Inter", "system-ui", "sans-serif"],
+            display: ["Epilogue", "Geist", "sans-serif"]
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03)',
+            'card-hover': '0 12px 24px -6px rgba(0, 0, 0, 0.07), 0 4px 10px -2px rgba(0, 0, 0, 0.03)'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #ffffff;
+        color: #000000;
+      }
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #fafafa;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d4d4d4;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-white font-sans text-black antialiased min-h-screen flex flex-col selection:bg-black selection:text-white">
+  <header class="sticky top-0 z-50 w-full bg-black border-b border-neutral-900">
+    <div class="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 h-20 flex items-center justify-between">
+      <a class="flex flex-col justify-center group" href="#">
+        <span class="font-sans font-bold text-xl tracking-tight text-white leading-tight">Brian<span class="text-neutral-400 font-semibold">DEV</span></span>
+        <span class="text-xs font-mono text-neutral-400 tracking-tight leading-tight">Brian Antonio Juarez Garcia</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-1 w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-14 sm:py-20 flex flex-col justify-start">
+    <section class="w-full mb-16 lg:mb-20">
+      <div class="flex flex-col items-start gap-4">
+        <div class="w-full flex flex-col md:flex-row md:items-end justify-between gap-6 pt-2 pb-6 border-neutral-200">
+          <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-black">
+            Mis prácticas
+          </h1>
+        </div>
+      </div>
+    </section>
+
+    <section class="w-full pb-20" id="practicas">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <article class="group relative flex flex-col bg-white rounded-2xl border border-neutral-200 shadow-card hover:shadow-card-hover hover:border-black transition-all duration-300 overflow-hidden">
+          <div class="p-6 sm:p-8 flex flex-col justify-between h-full gap-6">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-black transition-colors group-hover:bg-black group-hover:text-white group-hover:border-black">
+                <svg class="w-5 h-5 stroke-[1.75]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <rect height="14" rx="2" stroke-linecap="round" width="18" x="3" y="4"></rect>
+                  <path d="M3 9h18" stroke-linecap="round"></path>
+                  <circle cx="6" cy="6.5" fill="currentColor" r="0.75"></circle>
+                  <circle cx="9" cy="6.5" fill="currentColor" r="0.75"></circle>
+                  <circle cx="12" cy="6.5" fill="currentColor" r="0.75"></circle>
+                  <path d="M9 20h6M12 18v2" stroke-linecap="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-black tracking-tight">01 / Plataforma SaaS Web</h2>
+            </div>
+            <div class="flex flex-col gap-2.5 pt-2">
+              <a class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-black hover:bg-neutral-800 text-white text-xs font-semibold tracking-wider uppercase transition-colors" href="#">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                <span>Ver página</span>
+              </a>
+              <a class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-black border border-neutral-200 text-xs font-semibold tracking-wider uppercase transition-colors" href="#">
+                <span class="material-symbols-outlined text-sm">code</span>
+                <span>Ver repo GitHub</span>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group relative flex flex-col bg-white rounded-2xl border border-neutral-200 shadow-card hover:shadow-card-hover hover:border-black transition-all duration-300 overflow-hidden">
+          <div class="p-6 sm:p-8 flex flex-col justify-between h-full gap-6">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-black transition-colors group-hover:bg-black group-hover:text-white group-hover:border-black">
+                <svg class="w-5 h-5 stroke-[1.75]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M4 17l6-5-6-5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M12 19h8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-black tracking-tight">02 / E-Commerce Minimalista</h2>
+            </div>
+            <div class="flex flex-col gap-2.5 pt-2">
+              <a class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-black hover:bg-neutral-800 text-white text-xs font-semibold tracking-wider uppercase transition-colors" href="#">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                <span>Ver página</span>
+              </a>
+              <a class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-black border border-neutral-200 text-xs font-semibold tracking-wider uppercase transition-colors" href="#">
+                <span class="material-symbols-outlined text-sm">code</span>
+                <span>Ver repo GitHub</span>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="group relative flex flex-col bg-white rounded-2xl border border-neutral-200 shadow-card hover:shadow-card-hover hover:border-black transition-all duration-300 overflow-hidden">
+          <div class="p-6 sm:p-8 flex flex-col justify-between h-full gap-6">
+            <div class="flex items-center justify-between">
+              <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-black transition-colors group-hover:bg-black group-hover:text-white group-hover:border-black">
+                <svg class="w-5 h-5 stroke-[1.75]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M2 17l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold text-black tracking-tight">03 / Sistema de Gestión Web</h2>
+            </div>
+            <div class="flex flex-col gap-2.5 pt-2">
+              <a class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-black hover:bg-neutral-800 text-white text-xs font-semibold tracking-wider uppercase transition-colors" href="#">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                <span>Ver página</span>
+              </a>
+              <a class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-black border border-neutral-200 text-xs font-semibold tracking-wider uppercase transition-colors" href="#">
+                <span class="material-symbols-outlined text-sm">code</span>
+                <span>Ver repo GitHub</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
