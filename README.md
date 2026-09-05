@@ -2,4 +2,4 @@
 
 Portafolio de prácticas de desarrollo web.
 
-https://briandev-portfolio-ten.vercel.app/
+https://briandev-portafolio.vercel.app/
