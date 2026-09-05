@@ -1,0 +1,149 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: #f4f4f4;
+  color: #333333;
+  padding: 20px;
+}
+
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto 24px auto;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #dddddd;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.encabezado h1 {
+  font-size: 24px;
+  color: #0c2340;
+}
+
+.subtitulo-encabezado {
+  font-size: 14px;
+  color: #555555;
+  margin-top: 4px;
+}
+
+#btn-actualizar {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#btn-actualizar:hover {
+  background-color: #0056b3;
+}
+
+.contenedor-cursos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.tarjeta {
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.contenedor-imagen {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.contenedor-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.contenedor-imagen:hover img {
+  transform: scale(1.1);
+}
+
+.contenido-tarjeta {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.contenido-tarjeta h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.duracion {
+  font-size: 13px;
+  color: #666666;
+  margin-bottom: 10px;
+}
+
+.descripcion {
+  font-size: 14px;
+  color: #444444;
+  line-height: 1.4;
+  margin-bottom: 15px;
+  flex-grow: 1;
+}
+
+.seccion-precios {
+  background-color: #f9f9f9;
+  border: 1px solid #eeeeee;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 13px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-around;
+  font-weight: bold;
+}
+
+.precio-mxn {
+  color: #007bff;
+}
+
+.btn-inscribirse {
+  background-color: #28a745;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-inscribirse:hover {
+  background-color: #218838;
+}
+
+.pie-pagina {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 13px;
+  color: #777777;
+}
