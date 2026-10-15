@@ -373,12 +373,13 @@ input:focus, select:focus { outline: none; border-color: var(--primario); box-sh
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 6px;
   min-height: 44px;
-  padding: 0 6px;
+  padding: 0 4px;
+  white-space: nowrap;
   border: 1px solid var(--borde-fuerte);
   border-radius: var(--radio-sm);
-  font-size: .85rem;
+  font-size: .82rem;
   font-weight: 600;
   color: var(--texto-2);
   text-align: center;
