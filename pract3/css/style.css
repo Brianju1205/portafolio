@@ -390,7 +390,7 @@ input:focus, select:focus { outline: none; border-color: var(--primario); box-sh
 .segmentado__opcion--atendido { --tono: var(--atendido); --tono-fondo: var(--atendido-fondo); }
 .segmentado__opcion input:checked + span { border-color: var(--tono); background: var(--tono-fondo); color: var(--tono); box-shadow: inset 0 0 0 1px var(--tono); }
 .segmentado__opcion input:focus-visible + span { outline: 3px solid rgba(32, 73, 196, .35); outline-offset: 2px; }
-.segmentado--compacto .segmentado__opcion span { min-height: 38px; font-size: .8rem; }
+.segmentado--compacto .segmentado__opcion span { min-height: 38px; padding: 0 4px; gap: 5px; font-size: .78rem; white-space: nowrap; }
 
 .formulario__rejilla { display: grid; gap: 16px; }
 .formulario__pie {
@@ -685,7 +685,7 @@ input:focus, select:focus { outline: none; border-color: var(--primario); box-sh
 
   .visor__cuerpo { flex-direction: row; overflow: hidden; }
   .visor__pdf { overflow-y: auto; min-height: 0; padding: 20px; }
-  .visor__detalle { width: 320px; border-left: 1px solid var(--borde); overflow-y: auto; }
+  .visor__detalle { width: 340px; border-left: 1px solid var(--borde); overflow-y: auto; }
   .modal__caja.visor { max-width: 1180px; height: min(92vh, 900px); border-radius: 18px; overflow: hidden; box-shadow: var(--sombra-alta); }
   .visor__cabecera { padding: 10px 16px; }
 
