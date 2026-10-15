@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101a5e">
+  <meta name="description" content="Sistema de Gestión de Documentos de una Oficina · UNACH ETDA Campus IV">
+  <title>Gestión de Documentos · UNACH</title>
+  <link rel="icon" href="img/logo-unach.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..600,0..1,0&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============ Barra superior ============ -->
+  <header class="topbar">
+    <a class="marca" href="#inicio">
+      <img src="img/logo-unach.png" alt="Escudo UNACH" width="40" height="34">
+      <span class="marca__texto">
+        <strong>UNACH</strong>
+        <small>Gestión de Documentos</small>
+      </span>
+    </a>
+    <div class="topbar__usuario">
+      <span class="icono">account_circle</span>
+      <span class="ocultar-movil">Oficialía de partes</span>
+    </div>
+  </header>
+
+  <!-- ============ Menú lateral (tableta y escritorio) ============ -->
+  <nav class="lateral" aria-label="Menú principal">
+    <a href="#inicio" data-vista="inicio"><span class="icono">home</span>Inicio</a>
+    <a href="#documentos" data-vista="documentos"><span class="icono">description</span>Documentos</a>
+    <a href="#nuevo" data-vista="nuevo"><span class="icono">note_add</span>Nuevo documento</a>
+    <a href="#buscar" data-vista="buscar"><span class="icono">search</span>Buscar</a>
+    <a href="#acerca" data-vista="acerca"><span class="icono">info</span>Acerca de</a>
+    <a class="lateral__volver" href="../"><span class="icono">arrow_back</span>Portafolio</a>
+  </nav>
+
+  <main class="contenido" id="contenido">
+
+    <!-- ============ Vista: Inicio ============ -->
+    <section class="vista" id="vista-inicio" data-titulo="Inicio">
+      <div class="encabezado">
+        <div>
+          <p class="encabezado__pre" id="saludo">Bienvenido</p>
+          <h1>Panel de documentos</h1>
+        </div>
+        <a class="btn btn--primario ocultar-movil" href="#nuevo"><span class="icono">add</span>Nuevo documento</a>
+      </div>
+
+      <div class="indicadores" id="indicadores">
+        <a class="indicador" href="#documentos" data-estatus="">
+          <span class="indicador__icono icono">folder_open</span>
+          <span class="indicador__valor" data-clave="total">–</span>
+          <span class="indicador__etiqueta">Total de documentos</span>
+        </a>
+        <a class="indicador indicador--recibido" href="#documentos" data-estatus="Recibido">
+          <span class="indicador__icono icono">inbox</span>
+          <span class="indicador__valor" data-clave="Recibido">–</span>
+          <span class="indicador__etiqueta">Recibidos</span>
+        </a>
+        <a class="indicador indicador--proceso" href="#documentos" data-estatus="En proceso">
+          <span class="indicador__icono icono">pending_actions</span>
+          <span class="indicador__valor" data-clave="En proceso">–</span>
+          <span class="indicador__etiqueta">En proceso</span>
+        </a>
+        <a class="indicador indicador--atendido" href="#documentos" data-estatus="Atendido">
+          <span class="indicador__icono icono">task_alt</span>
+          <span class="indicador__valor" data-clave="Atendido">–</span>
+          <span class="indicador__etiqueta">Atendidos</span>
+        </a>
+      </div>
+
+      <div class="rejilla-inicio">
+        <article class="tarjeta">
+          <div class="tarjeta__cabecera">
+            <h2>Registrados recientemente</h2>
+            <a class="enlace" href="#documentos">Ver todos</a>
+          </div>
+          <ul class="recientes" id="recientes">
+            <li class="esqueleto"></li><li class="esqueleto"></li><li class="esqueleto"></li>
+          </ul>
+        </article>
+
+        <article class="tarjeta">
+          <div class="tarjeta__cabecera"><h2>Flujo de atención</h2></div>
+          <ol class="flujo">
+            <li><span class="icono">mark_email_unread</span><div><strong>Recibir</strong><small>Llega el oficio a la oficina.</small></div></li>
+            <li><span class="icono">photo_camera</span><div><strong>Digitalizar</strong><small>Foto con el celular o archivo PDF.</small></div></li>
+            <li><span class="icono">edit_note</span><div><strong>Registrar</strong><small>No. de oficio, asunto, remitente…</small></div></li>
+            <li><span class="icono">manage_search</span><div><strong>Buscar</strong><small>Por texto, fecha o estatus.</small></div></li>
+            <li><span class="icono">published_with_changes</span><div><strong>Actualizar estatus</strong><small>Recibido → En proceso → Atendido.</small></div></li>
+            <li><span class="icono">picture_as_pdf</span><div><strong>Consultar PDF</strong><small>Ver en la plataforma o descargar.</small></div></li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ Vista: Listado / búsqueda ============ -->
+    <section class="vista" id="vista-documentos" data-titulo="Documentos" hidden>
+      <div class="encabezado">
+        <h1>Listado de documentos</h1>
+        <a class="btn btn--primario ocultar-movil" href="#nuevo"><span class="icono">add</span>Nuevo documento</a>
+      </div>
+
+      <form class="tarjeta filtros" id="form-filtros" autocomplete="off">
+        <div class="buscador">
+          <span class="icono">search</span>
+          <input type="search" name="q" id="filtro-q" placeholder="Buscar por No. de oficio, asunto, remitente o destinatario…" aria-label="Buscar">
+          <button class="btn btn--primario" type="submit">Buscar</button>
+        </div>
+
+        <div class="filtros__fila">
+          <label class="campo">
+            <span>Estatus</span>
+            <select name="estatus">
+              <option value="">Todos</option>
+              <option>Recibido</option>
+              <option>En proceso</option>
+              <option>Atendido</option>
+            </select>
+          </label>
+          <label class="campo">
+            <span>Desde</span>
+            <input type="date" name="desde">
+          </label>
+          <label class="campo">
+            <span>Hasta</span>
+            <input type="date" name="hasta">
+          </label>
+          <div class="filtros__acciones">
+            <button class="btn btn--secundario" type="button" id="btn-mas-filtros" aria-expanded="false" aria-controls="filtros-avanzados">
+              <span class="icono">tune</span><span>Más filtros</span>
+            </button>
+            <button class="btn btn--texto" type="reset" id="btn-limpiar">Limpiar</button>
+          </div>
+        </div>
+
+        <div class="filtros__avanzados" id="filtros-avanzados" hidden>
+          <label class="campo"><span>No. de oficio</span><input type="text" name="no_oficio" placeholder="Ej. 001/2026"></label>
+          <label class="campo"><span>Asunto</span><input type="text" name="asunto" placeholder="Contiene…"></label>
+          <label class="campo"><span>Remitente</span><input type="text" name="remitente" placeholder="Contiene…"></label>
+          <label class="campo"><span>Destinatario</span><input type="text" name="destinatario" placeholder="Contiene…"></label>
+        </div>
+      </form>
+
+      <div class="tarjeta resultados">
+        <div class="resultados__estado" id="chips-filtros"></div>
+
+        <!-- Tabla (tableta y escritorio) -->
+        <div class="tabla-envoltura">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>No. Oficio</th><th>Fecha</th><th>Asunto</th><th>Remitente</th>
+                <th>Destinatario</th><th>Estatus</th><th class="tabla__acciones">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-cuerpo"></tbody>
+          </table>
+        </div>
+
+        <!-- Tarjetas (móvil) -->
+        <ul class="lista-movil" id="lista-movil"></ul>
+
+        <div class="vacio" id="sin-resultados" hidden>
+          <span class="icono">search_off</span>
+          <p><strong>Sin resultados</strong>No hay documentos que coincidan con la búsqueda.</p>
+        </div>
+
+        <div class="paginacion">
+          <span id="paginacion-info">Cargando…</span>
+          <div class="paginacion__botones" id="paginacion-botones"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Vista: Registro / edición ============ -->
+    <section class="vista" id="vista-formulario" data-titulo="Nuevo documento" hidden>
+      <div class="encabezado">
+        <div>
+          <a class="enlace enlace--volver" href="#documentos"><span class="icono">arrow_back</span>Documentos</a>
+          <h1 id="formulario-titulo">Registrar documento</h1>
+        </div>
+      </div>
+
+      <form class="tarjeta formulario" id="form-documento" novalidate autocomplete="off">
+        <input type="hidden" name="id">
+
+        <div class="formulario__rejilla">
+          <label class="campo">
+            <span>No. de Oficio <b>*</b></span>
+            <input type="text" name="no_oficio" maxlength="50" placeholder="Ej. 123/2026" required>
+            <em class="campo__error"></em>
+          </label>
+          <label class="campo">
+            <span>Fecha de recepción <b>*</b></span>
+            <input type="date" name="fecha" required>
+            <em class="campo__error"></em>
+          </label>
+          <label class="campo campo--ancho">
+            <span>Asunto <b>*</b></span>
+            <input type="text" name="asunto" maxlength="255" placeholder="Descripción breve del asunto" required>
+            <em class="campo__error"></em>
+          </label>
+          <label class="campo">
+            <span>Remitente <b>*</b></span>
+            <input type="text" name="remitente" maxlength="150" placeholder="Persona, dependencia o institución" list="lista-remitentes" required>
+            <em class="campo__error"></em>
+          </label>
+          <label class="campo">
+            <span>Destinatario <b>*</b></span>
+            <input type="text" name="destinatario" maxlength="150" placeholder="Persona, área o dependencia" list="lista-destinatarios" required>
+            <em class="campo__error"></em>
+          </label>
+
+          <fieldset class="campo campo--ancho">
+            <legend>Estatus <b>*</b></legend>
+            <div class="segmentado">
+              <label class="segmentado__opcion segmentado__opcion--recibido">
+                <input type="radio" name="estatus" value="Recibido" checked><span><i></i>Recibido</span>
+              </label>
+              <label class="segmentado__opcion segmentado__opcion--proceso">
+                <input type="radio" name="estatus" value="En proceso"><span><i></i>En proceso</span>
+              </label>
+              <label class="segmentado__opcion segmentado__opcion--atendido">
+                <input type="radio" name="estatus" value="Atendido"><span><i></i>Atendido</span>
+              </label>
+            </div>
+            <em class="campo__error"></em>
+          </fieldset>
+
+          <fieldset class="campo campo--ancho" id="campo-archivo">
+            <legend>Documento (foto o PDF) <b id="archivo-obligatorio">*</b></legend>
+            <div class="captura">
+              <label class="captura__boton">
+                <input type="file" id="input-camara" accept="image/*" capture="environment" multiple>
+                <span class="icono">photo_camera</span>
+                <strong>Tomar foto</strong>
+                <small>del documento</small>
+              </label>
+              <label class="captura__boton">
+                <input type="file" id="input-archivo" accept="application/pdf,image/*">
+                <span class="icono">upload_file</span>
+                <strong>Seleccionar archivo</strong>
+                <small>PDF o imagen</small>
+              </label>
+            </div>
+            <div class="adjunto" id="adjunto" hidden></div>
+            <p class="ayuda">Las fotos se convierten automáticamente a un PDF (una página por foto). Tamaño máximo: 4&nbsp;MB.</p>
+            <em class="campo__error" data-campo="archivo"></em>
+          </fieldset>
+        </div>
+
+        <div class="formulario__pie">
+          <a class="btn btn--secundario" href="#documentos">Cancelar</a>
+          <button class="btn btn--primario btn--grande" type="submit" id="btn-guardar">
+            <span class="icono">save</span><span>Guardar documento</span>
+          </button>
+        </div>
+      </form>
+
+      <datalist id="lista-remitentes"></datalist>
+      <datalist id="lista-destinatarios"></datalist>
+    </section>
+
+    <!-- ============ Vista: Acerca de ============ -->
+    <section class="vista" id="vista-acerca" data-titulo="Acerca de" hidden>
+      <div class="encabezado"><h1>Acerca de la plataforma</h1></div>
+      <article class="tarjeta prosa">
+        <p><strong>Laboratorio práctico · Práctica 3.</strong> Plataforma web responsiva para digitalizar, registrar, organizar, consultar y dar seguimiento a los documentos recibidos en una oficina.</p>
+        <dl class="ficha">
+          <dt>Asignatura</dt><dd>Desarrollo de aplicaciones web y móviles</dd>
+          <dt>Programa</dt><dd>Lic. en Ingeniería en Desarrollo y Tecnologías de Software</dd>
+          <dt>Escuela</dt><dd>ETDA · Campus IV Tapachula, UNACH</dd>
+          <dt>Alumno</dt><dd>Brian Antonio Juárez García</dd>
+          <dt>Tecnologías</dt><dd>HTML5, CSS3, jQuery, PHP 8 (PDO) y MySQL</dd>
+        </dl>
+        <p class="ayuda">El código fuente, el script SQL y el manual de instalación están en el repositorio de GitHub.</p>
+        <a class="btn btn--secundario" href="https://github.com/Brianju1205/pract3" target="_blank" rel="noopener noreferrer"><span class="icono">code</span>Ver repositorio</a>
+      </article>
+    </section>
+  </main>
+
+  <!-- ============ Navegación inferior (móvil) ============ -->
+  <nav class="nav-inferior" aria-label="Navegación">
+    <a href="#inicio" data-vista="inicio"><span class="icono">home</span>Inicio</a>
+    <a href="#documentos" data-vista="documentos"><span class="icono">description</span>Documentos</a>
+    <a href="#nuevo" data-vista="nuevo" class="nav-inferior__nuevo"><span class="icono">add</span>Nuevo</a>
+    <a href="#buscar" data-vista="buscar"><span class="icono">search</span>Buscar</a>
+    <a href="#acerca" data-vista="acerca"><span class="icono">info</span>Acerca</a>
+  </nav>
+
+  <!-- ============ Visor del documento ============ -->
+  <div class="modal" id="visor" hidden role="dialog" aria-modal="true" aria-labelledby="visor-titulo">
+    <div class="modal__fondo" data-cerrar></div>
+    <div class="modal__caja visor">
+      <header class="visor__cabecera">
+        <button class="btn-icono" type="button" data-cerrar aria-label="Cerrar"><span class="icono">close</span></button>
+        <div class="visor__titulo">
+          <small id="visor-oficio"></small>
+          <h2 id="visor-titulo"></h2>
+        </div>
+        <a class="btn btn--primario" id="visor-descargar" href="#" download><span class="icono">download</span><span class="ocultar-movil">Descargar</span></a>
+      </header>
+      <div class="visor__cuerpo">
+        <div class="visor__pdf" id="visor-pdf"></div>
+        <aside class="visor__detalle">
+          <dl class="ficha" id="visor-ficha"></dl>
+          <div class="visor__estatus">
+            <span class="etiqueta-campo">Cambiar estatus</span>
+            <div class="segmentado segmentado--compacto" id="visor-estatus"></div>
+          </div>
+          <div class="visor__acciones">
+            <a class="btn btn--secundario" id="visor-editar" href="#"><span class="icono">edit</span>Editar</a>
+            <button class="btn btn--peligro" type="button" id="visor-eliminar"><span class="icono">delete</span>Eliminar</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ Confirmación ============ -->
+  <div class="modal" id="confirmar" hidden role="alertdialog" aria-modal="true" aria-labelledby="confirmar-titulo">
+    <div class="modal__fondo" data-cerrar></div>
+    <div class="modal__caja dialogo">
+      <span class="dialogo__icono icono">delete_forever</span>
+      <h2 id="confirmar-titulo">¿Eliminar documento?</h2>
+      <p id="confirmar-texto"></p>
+      <div class="dialogo__acciones">
+        <button class="btn btn--secundario" type="button" data-cerrar>Cancelar</button>
+        <button class="btn btn--peligro" type="button" id="confirmar-aceptar">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menú contextual de acciones de la tabla -->
+  <div class="menu" id="menu-acciones" hidden role="menu"></div>
+
+  <div class="avisos" id="avisos" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

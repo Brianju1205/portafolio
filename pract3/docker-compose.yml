@@ -1,0 +1,37 @@
+# Entorno local: PHP 8.3 + Apache y MySQL 8 con el script SQL precargado.
+#   docker compose up -d   →   http://localhost:8080
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: gestion_documentos
+      DB_USER: oficina
+      DB_PASS: oficina123
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: gestion_documentos
+      MYSQL_USER: oficina
+      MYSQL_PASSWORD: oficina123
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d:ro
+      - datos-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      interval: 5s
+      retries: 20
+
+volumes:
+  datos-mysql:

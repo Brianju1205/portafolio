@@ -1,3 +1,19 @@
 {
-  "name": "briandev-portfolio"
+  "name": "briandev-portfolio",
+  "functions": {
+    "api/pract3/*.php": {
+      "runtime": "vercel-php@0.9.0"
+    }
+  },
+  "routes": [
+    {
+      "src": "/pract3/api/(documentos|pdf|resumen)\\.php",
+      "dest": "/api/pract3/$1.php"
+    },
+    {
+      "src": "/pract3/api/.*",
+      "status": 404,
+      "dest": "/404"
+    }
+  ]
 }
