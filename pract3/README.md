@@ -23,7 +23,12 @@ Demo: https://briandev-portafolio.vercel.app/pract3/
 - MySQL
 - jsPDF para convertir las fotos a PDF y pdf.js para mostrar los PDF
 
-Los PDF se guardan en la base de datos para que funcione también en Vercel.
+## ¿Dónde se guardan los PDF?
+
+- En XAMPP o Docker se guardan en la carpeta `pdf/` (por ejemplo `htdocs/pract3/pdf/oficio_001-2026.pdf`) y en la base de datos solo queda el nombre del archivo (columna `archivo_pdf`).
+- En Vercel no se pueden guardar archivos en el servidor, así que ahí el PDF se guarda en la tabla `documentos_archivos`.
+
+El sistema detecta solo cuál usar: si puede escribir en `pdf/` usa la carpeta, si no usa la base de datos.
 
 ## Carpetas
 
@@ -32,6 +37,7 @@ index.html
 css/        estilos
 js/         app.js
 api/        archivos PHP (documentos, pdf, resumen)
+pdf/        PDF de los documentos
 sql/        script de la base de datos y datos de prueba
 ```
 
@@ -60,4 +66,4 @@ Se usa el runtime `vercel-php` y una base de datos MySQL en TiDB Cloud. Los dato
 
 Tabla `documentos`: id_documento, no_oficio, fecha, asunto, remitente, destinatario, estatus, archivo_pdf.
 
-Tabla `documentos_archivos`: guarda el contenido del PDF de cada documento.
+Tabla `documentos_archivos`: guarda el contenido del PDF solo cuando se usa en Vercel.

@@ -16,6 +16,23 @@ date_default_timezone_set('America/Mexico_City');
 
 const ESTATUS_VALIDOS = ['Recibido', 'En proceso', 'Atendido'];
 const PDF_TAMANO_MAXIMO = 4 * 1024 * 1024; // 4 MB (límite de cuerpo de Vercel: 4.5 MB)
+const CARPETA_PDF = __DIR__ . '/../../pdf';
+
+/**
+ * Los PDF se guardan en la carpeta pdf/ cuando el servidor permite escribir
+ * en ella (XAMPP, Docker). En Vercel el disco es de solo lectura, así que
+ * se guardan en la tabla documentos_archivos.
+ */
+function guardarEnCarpeta(): bool
+{
+    return is_dir(CARPETA_PDF) && is_writable(CARPETA_PDF);
+}
+
+/** Ruta del PDF dentro de la carpeta pdf/. */
+function rutaPdf(string $nombre): string
+{
+    return CARPETA_PDF . '/' . basename($nombre);
+}
 
 /** Devuelve la configuración de conexión a la base de datos. */
 function config(): array

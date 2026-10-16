@@ -14,6 +14,7 @@ declare(strict_types=1);
 require __DIR__ . '/lib/bootstrap.php';
 
 // Columnas devueltas al frontend (el binario del PDF nunca se incluye).
+// tamano_bytes viene de la BD (Vercel) o del archivo en pdf/ (ver normalizar).
 const COLUMNAS = 'd.id_documento, d.no_oficio, d.fecha, d.asunto, d.remitente, d.destinatario,
                   d.estatus, d.archivo_pdf, d.creado_en, d.actualizado_en, a.tamano_bytes';
 
@@ -146,8 +147,9 @@ function guardarDocumento(array $entrada, ?array $archivo): never
     }
 
     $datos = validarCampos($entrada);
-    $pdf = leerPdf($archivo, obligatorio: $existente === null || $existente['archivo_pdf'] === null);
+    $pdf = leerPdf($archivo, obligatorio: $existente === null || $existente['tamano_bytes'] === null);
     $datos['archivo_pdf'] = 'oficio_' . preg_replace('/[^A-Za-z0-9_-]+/', '-', $datos['no_oficio']) . '.pdf';
+    $anterior = $existente['archivo_pdf'] ?? null;
 
     $pdo = db();
     $pdo->beginTransaction();
@@ -169,7 +171,12 @@ function guardarDocumento(array $entrada, ?array $archivo): never
             $stmt->execute($datos + ['id' => $id]);
         }
 
-        if ($pdf !== null) {
+        if ($pdf !== null && guardarEnCarpeta()) {
+            if (file_put_contents(rutaPdf($datos['archivo_pdf']), $pdf) === false) {
+                throw new RuntimeException('No se pudo escribir el PDF en la carpeta pdf/.');
+            }
+            $pdo->prepare('DELETE FROM documentos_archivos WHERE id_documento = ?')->execute([$id]);
+        } elseif ($pdf !== null) {
             $stmt = $pdo->prepare(
                 'REPLACE INTO documentos_archivos (id_documento, contenido, tamano_bytes, hash_sha256)
                  VALUES (?, ?, ?, ?)'
@@ -181,10 +188,15 @@ function guardarDocumento(array $entrada, ?array $archivo): never
             $stmt->execute();
         }
 
+        // Si cambió el No. de Oficio, el archivo de la carpeta cambia de nombre.
+        if ($anterior !== null && $anterior !== $datos['archivo_pdf'] && is_file(rutaPdf($anterior))) {
+            $pdf === null ? rename(rutaPdf($anterior), rutaPdf($datos['archivo_pdf'])) : unlink(rutaPdf($anterior));
+        }
+
         $pdo->commit();
-    } catch (PDOException $e) {
+    } catch (Throwable $e) {
         $pdo->rollBack();
-        if ($e->getCode() === '23000') {
+        if ($e instanceof PDOException && $e->getCode() === '23000') {
             fallar('Ya existe un documento con el No. de Oficio «' . $datos['no_oficio'] . '».', 409, ['campo' => 'no_oficio']);
         }
         throw $e;
@@ -213,11 +225,12 @@ function eliminarDocumento(array $entrada): never
 {
     $id = enteroPositivo($entrada, 'id') ?? fallar('Documento no válido.');
 
-    // El PDF se elimina en cascada (fk_archivos_documento).
-    $stmt = db()->prepare('DELETE FROM documentos WHERE id_documento = ?');
-    $stmt->execute([$id]);
-    if ($stmt->rowCount() === 0) {
-        fallar('El documento no existe.', 404);
+    $documento = buscarPorId($id) ?? fallar('El documento no existe.', 404);
+
+    // En la BD el PDF se elimina en cascada (fk_archivos_documento).
+    db()->prepare('DELETE FROM documentos WHERE id_documento = ?')->execute([$id]);
+    if ($documento['archivo_pdf'] !== null && is_file(rutaPdf($documento['archivo_pdf']))) {
+        unlink(rutaPdf($documento['archivo_pdf']));
     }
     responder(['ok' => true, 'mensaje' => 'Documento eliminado.']);
 }
@@ -324,5 +337,8 @@ function normalizar(array $fila): array
 {
     $fila['id_documento'] = (int) $fila['id_documento'];
     $fila['tamano_bytes'] = $fila['tamano_bytes'] === null ? null : (int) $fila['tamano_bytes'];
+    if ($fila['tamano_bytes'] === null && $fila['archivo_pdf'] !== null && is_file(rutaPdf($fila['archivo_pdf']))) {
+        $fila['tamano_bytes'] = filesize(rutaPdf($fila['archivo_pdf']));
+    }
     return $fila;
 }

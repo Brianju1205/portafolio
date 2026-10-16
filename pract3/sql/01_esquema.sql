@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS documentos (
 
 -- ---------------------------------------------------------------------
 --  documentos_archivos: contenido binario del PDF (1:1 con documentos).
---  Se separa para que los listados no carguen los binarios y para que
---  el sistema funcione en servidores sin disco persistente (Vercel).
+--  Solo se usa en servidores sin disco persistente (Vercel). En XAMPP o
+--  Docker los PDF se guardan en la carpeta pdf/ y aquí no queda nada.
 -- ---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS documentos_archivos (
   id_documento INT UNSIGNED NOT NULL,
