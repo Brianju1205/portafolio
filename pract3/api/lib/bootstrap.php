@@ -1,6 +1,4 @@
 <?php
-// Configuración, conexión a MySQL y funciones comunes
-
 declare(strict_types=1);
 
 ini_set('display_errors', '0');
@@ -8,22 +6,19 @@ error_reporting(E_ALL);
 date_default_timezone_set('America/Mexico_City');
 
 const ESTATUS_VALIDOS = ['Recibido', 'En proceso', 'Atendido'];
-const PDF_TAMANO_MAXIMO = 4 * 1024 * 1024; // 4 MB
+const PDF_TAMANO_MAXIMO = 4 * 1024 * 1024;
 const CARPETA_PDF = __DIR__ . '/../../pdf';
 
-// En XAMPP los PDF van a la carpeta pdf/; en Vercel, a la base de datos
 function guardarEnCarpeta(): bool
 {
     return is_dir(CARPETA_PDF) && is_writable(CARPETA_PDF);
 }
 
-// Ruta del PDF en la carpeta pdf/
 function rutaPdf(string $nombre): string
 {
     return CARPETA_PDF . '/' . basename($nombre);
 }
 
-// Datos de conexión a la base de datos
 function config(): array
 {
     static $config = null;
@@ -56,7 +51,6 @@ function config(): array
     return $config;
 }
 
-// Conexión a MySQL
 function db(): PDO
 {
     static $pdo = null;
@@ -72,7 +66,6 @@ function db(): PDO
         PDO::ATTR_EMULATE_PREPARES   => false,
     ];
 
-    // Conexión segura para la base en la nube
     if ($c['ssl']) {
         $ca = rutaCertificadosCA();
         if ($ca !== null) {
@@ -85,7 +78,6 @@ function db(): PDO
     return $pdo;
 }
 
-// Compatibilidad con PHP 8.4
 function atributoMysql(string $nombre): int
 {
     if (class_exists('Pdo\Mysql') && defined('Pdo\Mysql::' . $nombre)) {
@@ -94,7 +86,6 @@ function atributoMysql(string $nombre): int
     return constant('PDO::MYSQL_' . $nombre);
 }
 
-// Busca los certificados del sistema
 function rutaCertificadosCA(): ?string
 {
     $candidatos = [
@@ -111,7 +102,6 @@ function rutaCertificadosCA(): ?string
     return null;
 }
 
-// Responde en JSON
 function responder(array $datos, int $codigo = 200): never
 {
     http_response_code($codigo);
@@ -121,13 +111,11 @@ function responder(array $datos, int $codigo = 200): never
     exit;
 }
 
-// Responde con un error
 function fallar(string $mensaje, int $codigo = 400, array $extra = []): never
 {
     responder(['ok' => false, 'error' => $mensaje] + $extra, $codigo);
 }
 
-// Revisa el método de la petición
 function exigirMetodo(string ...$metodos): string
 {
     $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -138,14 +126,12 @@ function exigirMetodo(string ...$metodos): string
     return $metodo;
 }
 
-// Lee un número entero positivo
 function enteroPositivo(array $origen, string $clave): ?int
 {
     $valor = filter_var($origen[$clave] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
     return $valor === false ? null : $valor;
 }
 
-// Errores no controlados
 set_exception_handler(static function (Throwable $e): void {
     error_log('[gestion-documentos] ' . $e);
     $mensaje = $e instanceof PDOException

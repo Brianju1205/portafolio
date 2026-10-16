@@ -1,11 +1,8 @@
 <?php
-// API de documentos: listar, ver, guardar, cambiar estatus y eliminar
-
 declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-// Columnas que se envían a la página
 const COLUMNAS = 'd.id_documento, d.no_oficio, d.fecha, d.asunto, d.remitente, d.destinatario,
                   d.estatus, d.archivo_pdf, d.creado_en, d.actualizado_en, a.tamano_bytes';
 
@@ -22,8 +19,6 @@ match ($_POST['accion'] ?? '') {
     'eliminar' => eliminarDocumento($_POST),
     default    => fallar('Acción no válida.'),
 };
-
-// Consultas
 
 function obtenerDocumento(int $id): never
 {
@@ -46,7 +41,6 @@ function buscarPorId(int $id): ?array
     return $fila === false ? null : normalizar($fila);
 }
 
-// Listado con filtros y paginación
 function listarDocumentos(array $entrada): never
 {
     $condiciones = [];
@@ -116,8 +110,6 @@ function listarDocumentos(array $entrada): never
     ]);
 }
 
-// Altas, cambios y bajas
-
 function guardarDocumento(array $entrada, ?array $archivo): never
 {
     $id = enteroPositivo($entrada, 'id');
@@ -168,7 +160,6 @@ function guardarDocumento(array $entrada, ?array $archivo): never
             $stmt->execute();
         }
 
-        // Si cambió el No. de Oficio se renombra el archivo
         if ($anterior !== null && $anterior !== $datos['archivo_pdf'] && is_file(rutaPdf($anterior))) {
             $pdf === null ? rename(rutaPdf($anterior), rutaPdf($datos['archivo_pdf'])) : unlink(rutaPdf($anterior));
         }
@@ -207,7 +198,6 @@ function eliminarDocumento(array $entrada): never
 
     $documento = buscarPorId($id) ?? fallar('El documento no existe.', 404);
 
-    // En la BD el PDF se borra en cascada
     db()->prepare('DELETE FROM documentos WHERE id_documento = ?')->execute([$id]);
     if ($documento['archivo_pdf'] !== null && is_file(rutaPdf($documento['archivo_pdf']))) {
         unlink(rutaPdf($documento['archivo_pdf']));
@@ -215,9 +205,6 @@ function eliminarDocumento(array $entrada): never
     responder(['ok' => true, 'mensaje' => 'Documento eliminado.']);
 }
 
-// Validación
-
-// Valida los campos del formulario
 function validarCampos(array $entrada): array
 {
     $reglas = [
@@ -266,7 +253,6 @@ function validarCampos(array $entrada): array
     ];
 }
 
-// Valida el PDF subido y devuelve su contenido
 function leerPdf(?array $archivo, bool $obligatorio): ?string
 {
     $error = $archivo['error'] ?? UPLOAD_ERR_NO_FILE;
@@ -285,7 +271,6 @@ function leerPdf(?array $archivo, bool $obligatorio): ?string
     }
 
     $contenido = file_get_contents($archivo['tmp_name']);
-    // Revisa que de verdad sea un PDF
     if ($contenido === false || !str_starts_with($contenido, '%PDF-')) {
         fallar('El archivo debe ser un PDF válido.', 422, ['errores' => ['archivo' => 'Solo se aceptan PDF.']]);
     }
@@ -303,13 +288,11 @@ function textoFiltro(array $entrada, string $clave): string
     return mb_substr(trim((string) ($entrada[$clave] ?? '')), 0, 100);
 }
 
-// Prepara el texto para buscar con LIKE
 function comodin(string $texto): string
 {
     return '%' . addcslashes($texto, '\\%_') . '%';
 }
 
-// Convierte los tipos de cada fila
 function normalizar(array $fila): array
 {
     $fila['id_documento'] = (int) $fila['id_documento'];

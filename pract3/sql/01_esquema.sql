@@ -1,5 +1,3 @@
--- Base de datos de la práctica 3
-
 SET NAMES utf8mb4;
 
 CREATE DATABASE IF NOT EXISTS gestion_documentos
@@ -8,7 +6,6 @@ CREATE DATABASE IF NOT EXISTS gestion_documentos
 
 USE gestion_documentos;
 
--- documentos: datos de cada oficio
 CREATE TABLE IF NOT EXISTS documentos (
   id_documento   INT UNSIGNED  NOT NULL AUTO_INCREMENT,
   no_oficio      VARCHAR(50)   NOT NULL,
@@ -17,7 +14,7 @@ CREATE TABLE IF NOT EXISTS documentos (
   remitente      VARCHAR(150)  NOT NULL,
   destinatario   VARCHAR(150)  NOT NULL,
   estatus        ENUM('Recibido', 'En proceso', 'Atendido') NOT NULL DEFAULT 'Recibido',
-  archivo_pdf    VARCHAR(255)  NULL COMMENT 'Nombre del archivo PDF digitalizado',
+  archivo_pdf    VARCHAR(255)  NULL,
   creado_en      TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   actualizado_en TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id_documento),
@@ -28,7 +25,6 @@ CREATE TABLE IF NOT EXISTS documentos (
   KEY idx_documentos_destinatario (destinatario)
 ) ENGINE = InnoDB;
 
--- documentos_archivos: PDF guardado en la BD (solo en Vercel)
 CREATE TABLE IF NOT EXISTS documentos_archivos (
   id_documento INT UNSIGNED NOT NULL,
   contenido    MEDIUMBLOB   NOT NULL,

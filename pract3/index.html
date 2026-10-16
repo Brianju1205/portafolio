@@ -14,7 +14,6 @@
 </head>
 <body>
 
-  <!-- Barra superior -->
   <header class="topbar">
     <a class="marca" href="#inicio">
       <img src="img/logo-unach.png" alt="Escudo UNACH" width="40" height="34">
@@ -29,7 +28,6 @@
     </div>
   </header>
 
-  <!-- Menú lateral (tableta y escritorio) -->
   <nav class="lateral" aria-label="Menú principal">
     <a href="#inicio" data-vista="inicio"><span class="icono">home</span>Inicio</a>
     <a href="#documentos" data-vista="documentos"><span class="icono">description</span>Documentos</a>
@@ -41,7 +39,6 @@
 
   <main class="contenido" id="contenido">
 
-    <!-- Vista: Inicio -->
     <section class="vista" id="vista-inicio" data-titulo="Inicio">
       <div class="encabezado">
         <div>
@@ -99,7 +96,6 @@
       </div>
     </section>
 
-    <!-- Vista: Listado / búsqueda -->
     <section class="vista" id="vista-documentos" data-titulo="Documentos" hidden>
       <div class="encabezado">
         <h1>Listado de documentos</h1>
@@ -150,7 +146,6 @@
       <div class="tarjeta resultados">
         <div class="resultados__estado" id="chips-filtros"></div>
 
-        <!-- Tabla (tableta y escritorio) -->
         <div class="tabla-envoltura">
           <table class="tabla">
             <thead>
@@ -163,7 +158,6 @@
           </table>
         </div>
 
-        <!-- Tarjetas (móvil) -->
         <ul class="lista-movil" id="lista-movil"></ul>
 
         <div class="vacio" id="sin-resultados" hidden>
@@ -178,7 +172,6 @@
       </div>
     </section>
 
-    <!-- Vista: Registro / edición -->
     <section class="vista" id="vista-formulario" data-titulo="Nuevo documento" hidden>
       <div class="encabezado">
         <div>
@@ -267,7 +260,6 @@
       <datalist id="lista-destinatarios"></datalist>
     </section>
 
-    <!-- Vista: Acerca de -->
     <section class="vista" id="vista-acerca" data-titulo="Acerca de" hidden>
       <div class="encabezado"><h1>Acerca de la plataforma</h1></div>
       <article class="tarjeta prosa">
@@ -285,7 +277,6 @@
     </section>
   </main>
 
-  <!-- Navegación inferior (móvil) -->
   <nav class="nav-inferior" aria-label="Navegación">
     <a href="#inicio" data-vista="inicio"><span class="icono">home</span>Inicio</a>
     <a href="#documentos" data-vista="documentos"><span class="icono">description</span>Documentos</a>
@@ -294,7 +285,6 @@
     <a href="#acerca" data-vista="acerca"><span class="icono">info</span>Acerca</a>
   </nav>
 
-  <!-- Visor del documento -->
   <div class="modal" id="visor" hidden role="dialog" aria-modal="true" aria-labelledby="visor-titulo">
     <div class="modal__fondo" data-cerrar></div>
     <div class="modal__caja visor">
@@ -323,7 +313,6 @@
     </div>
   </div>
 
-  <!-- Confirmación -->
   <div class="modal" id="confirmar" hidden role="alertdialog" aria-modal="true" aria-labelledby="confirmar-titulo">
     <div class="modal__fondo" data-cerrar></div>
     <div class="modal__caja dialogo">
@@ -337,7 +326,6 @@
     </div>
   </div>
 
-  <!-- Menú de acciones -->
   <div class="menu" id="menu-acciones" hidden role="menu"></div>
 
   <div class="avisos" id="avisos" aria-live="polite"></div>

@@ -2,6 +2,5 @@
 Thumbs.db
 .vercel
 config.local.php
-# PDF subidos en pruebas locales (los de ejemplo sí se versionan)
 pdf/*
 !pdf/oficio_00[1-8]-2026.pdf

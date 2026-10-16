@@ -1,6 +1,4 @@
 <?php
-// Totales por estatus y últimos documentos
-
 declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';

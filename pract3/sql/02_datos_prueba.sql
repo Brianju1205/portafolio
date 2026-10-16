@@ -1,5 +1,3 @@
--- Datos de prueba (importar después de 01_esquema.sql)
-
 USE gestion_documentos;
 SET NAMES utf8mb4;
 

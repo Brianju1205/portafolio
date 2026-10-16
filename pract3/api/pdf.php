@@ -1,6 +1,4 @@
 <?php
-// Muestra o descarga el PDF de un documento
-
 declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
@@ -28,7 +26,6 @@ if ($contenido === false || $contenido === null) {
     fallar('El documento no tiene PDF asociado.', 404);
 }
 
-// Evita reenviar el PDF si no cambió
 $etag = '"' . hash('sha256', $contenido) . '"';
 if (($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') === $etag) {
     http_response_code(304);

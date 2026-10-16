@@ -1,5 +1,3 @@
-// Lógica de la página con jQuery
-
 $(function () {
   'use strict';
 
@@ -8,7 +6,6 @@ $(function () {
   var ESTATUS = ['Recibido', 'En proceso', 'Atendido'];
   var CLASE_ESTATUS = { 'Recibido': 'recibido', 'En proceso': 'proceso', 'Atendido': 'atendido' };
 
-  // Worker de pdf.js
   if (window.pdfjsLib) {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   }
@@ -22,8 +19,6 @@ $(function () {
     visorId: null,
     renderVisor: 0
   };
-
-  // Utilidades
 
   function escapar(texto) {
     return $('<div>').text(texto == null ? '' : String(texto)).html();
@@ -56,7 +51,6 @@ $(function () {
     return API + 'pdf.php?id=' + encodeURIComponent(id) + (descargar ? '&descargar=1' : '');
   }
 
-  // Petición a la API
   function api(opciones) {
     return $.ajax($.extend({ dataType: 'json', cache: false }, opciones)).then(null, function (xhr) {
       var r = xhr.responseJSON || {};
@@ -78,8 +72,6 @@ $(function () {
       setTimeout(function () { $aviso.remove(); }, 260);
     }, tipo === 'error' ? 5000 : 3200);
   }
-
-  // Navegación entre vistas
 
   function navegar() {
     var partes = (location.hash.replace('#', '') || 'inicio').split('/');
@@ -110,8 +102,6 @@ $(function () {
   }
 
   $(window).on('hashchange', navegar);
-
-  // Inicio
 
   function saludar() {
     var h = new Date().getHours();
@@ -145,13 +135,10 @@ $(function () {
     });
   }
 
-  // Los indicadores abren el listado filtrado
   $('#indicadores').on('click', '.indicador', function () {
     limpiarFiltros();
     $('#form-filtros [name="estatus"]').val($(this).data('estatus'));
   });
-
-  // Listado, búsqueda y filtros
 
   var $filtros = $('#form-filtros');
   var temporizadorBusqueda;
@@ -267,7 +254,6 @@ $(function () {
     $('.resultados')[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
-  // Filtros activos
   function pintarChips(filtros) {
     var nombres = { q: 'Texto', estatus: 'Estatus', desde: 'Desde', hasta: 'Hasta', no_oficio: 'Oficio', asunto: 'Asunto', remitente: 'Remitente', destinatario: 'Destinatario' };
     var $c = $('#chips-filtros').empty();
@@ -319,8 +305,6 @@ $(function () {
     mostrarFiltrosAvanzados($('#filtros-avanzados').prop('hidden'));
   });
 
-  // Menú de acciones por documento
-
   var $menu = $('#menu-acciones');
 
   function abrirMenu(boton, doc) {
@@ -337,7 +321,6 @@ $(function () {
 
     $menu.html(html).removeAttr('hidden');
 
-    // Posición del menú
     var r = boton.getBoundingClientRect();
     var ancho = $menu.outerWidth(), alto = $menu.outerHeight();
     var izquierda = Math.max(8, Math.min(r.right - ancho, window.innerWidth - ancho - 8));
@@ -363,8 +346,6 @@ $(function () {
     if (!$(e.target).closest('#menu-acciones, [data-menu]').length) cerrarMenu();
   });
   $(window).on('resize scroll', cerrarMenu);
-
-  // Estatus y eliminación
 
   function cambiarEstatus(id, nuevo) {
     return api({ url: API + 'documentos.php', method: 'POST', data: { accion: 'estatus', id: id, estatus: nuevo } })
@@ -410,8 +391,6 @@ $(function () {
     if (ruta === 'documentos' || ruta === 'buscar') cargarDocumentos();
   }
 
-  // Modales
-
   var focoPrevio = null;
 
   function abrirModal(selector) {
@@ -440,8 +419,6 @@ $(function () {
     var $abierto = $('.modal:not([hidden])').last();
     if ($abierto.length) cerrarModal('#' + $abierto.attr('id'));
   });
-
-  // Visor del PDF
 
   $(document).on('click', '[data-ver]', function (e) {
     e.preventDefault();
@@ -509,7 +486,6 @@ $(function () {
       var anchoDisponible = Math.min($contenedor.width() || 600, 900);
       var escalaPantalla = window.devicePixelRatio || 1;
 
-      // Dibuja las páginas en orden
       var cadena = Promise.resolve();
       for (var n = 1; n <= pdf.numPages; n++) {
         (function (numero) {
@@ -534,8 +510,6 @@ $(function () {
       $contenedor.html('<div class="visor__mensaje"><span class="icono">error</span>No se pudo mostrar el PDF.<a class="btn btn--secundario" href="' + url + '" target="_blank" rel="noopener">Abrir en otra pestaña</a></div>');
     });
   }
-
-  // Formulario de registro / edición
 
   var $form = $('#form-documento');
   var sugerencias = { remitente: {}, destinatario: {} };
@@ -592,7 +566,6 @@ $(function () {
       .always(function () { $form.removeClass('cargando'); });
   }
 
-  // Muestra el archivo adjunto
   function pintarAdjunto() {
     var $a = $('#adjunto');
     if (estado.fotos.length) {
@@ -677,7 +650,6 @@ $(function () {
     $(this).closest('.campo').removeClass('campo--invalido').find('.campo__error').text('');
   });
 
-  // Validación del formulario
   function validarFormulario() {
     limpiarErrores();
     var valido = true;
@@ -738,14 +710,12 @@ $(function () {
       });
   });
 
-  // Obtiene el PDF a subir
   function obtenerPdfAdjunto($texto) {
     if (estado.pdf) return $.Deferred().resolve(estado.pdf).promise();
     if (!estado.fotos.length) return $.Deferred().resolve(null).promise();
 
     $texto.text('Generando PDF…');
     var d = $.Deferred();
-    // Si pesa mucho se baja la calidad
     generarPdf(estado.fotos, 1800, 0.78)
       .then(function (pdf) { return pdf.size <= PDF_MAXIMO ? pdf : generarPdf(estado.fotos, 1300, 0.6); })
       .then(function (pdf) { return pdf.size <= PDF_MAXIMO ? pdf : generarPdf(estado.fotos, 1000, 0.5); })
@@ -761,9 +731,6 @@ $(function () {
     return d.promise();
   }
 
-  // Digitalización: fotos → PDF (jsPDF)
-
-  // Carga la foto y su miniatura
   function prepararImagen(archivo) {
     return new Promise(function (resolver, rechazar) {
       var url = URL.createObjectURL(archivo);
@@ -788,7 +755,6 @@ $(function () {
     return canvas.toDataURL('image/jpeg', calidad);
   }
 
-  // Une las fotos en un PDF
   function generarPdf(fotos, ladoMaximo, calidad) {
     return new Promise(function (resolver) {
       var jsPDF = window.jspdf.jsPDF;
@@ -814,6 +780,5 @@ $(function () {
     });
   }
 
-  // Arranque
   navegar();
 });
