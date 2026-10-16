@@ -1,5 +1,4 @@
-# Entorno local: PHP 8.3 + Apache y MySQL 8 con el script SQL precargado.
-#   docker compose up -d   →   http://localhost:8080
+# docker compose up -d  ->  http://localhost:8080
 services:
   web:
     build: .

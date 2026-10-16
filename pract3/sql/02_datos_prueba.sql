@@ -1,8 +1,4 @@
--- =====================================================================
---  Script 2/2: datos de prueba (8 oficios)
---  Ejecutar después de 01_esquema.sql
---  Los PDF de ejemplo están en la carpeta pdf/ con el nombre de archivo_pdf
--- =====================================================================
+-- Datos de prueba (importar después de 01_esquema.sql)
 
 USE gestion_documentos;
 SET NAMES utf8mb4;

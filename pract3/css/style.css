@@ -1,10 +1,4 @@
-/* =====================================================================
-   Gestión de Documentos · UNACH ETDA
-   Hoja de estilos con enfoque Mobile First:
-     base       → teléfonos
-     ≥ 760px    → tabla de resultados y formulario a dos columnas
-     ≥ 960px    → menú lateral fijo (escritorio)
-   ===================================================================== */
+/* Estilos de la práctica 3 */
 
 :root {
   color-scheme: light;
@@ -78,9 +72,7 @@ a { color: inherit; }
 
 .ocultar-movil, .btn.ocultar-movil { display: none; }
 
-/* ---------------------------------------------------------------------
-   Botones
-   --------------------------------------------------------------------- */
+/* Botones */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -132,9 +124,7 @@ input:focus-visible, select:focus-visible { outline: 3px solid rgba(32, 73, 196,
 .enlace--volver { display: inline-flex; align-items: center; gap: 2px; margin-bottom: 4px; color: var(--texto-2); }
 .enlace--volver .icono { font-size: 18px; }
 
-/* ---------------------------------------------------------------------
-   Estructura: barra superior, contenido y navegación inferior
-   --------------------------------------------------------------------- */
+/* Estructura */
 .topbar {
   position: sticky;
   top: 0;
@@ -214,9 +204,7 @@ input:focus-visible, select:focus-visible { outline: 3px solid rgba(32, 73, 196,
 }
 .nav-inferior a.nav-inferior__nuevo.activo .icono { background: var(--azul-800); }
 
-/* ---------------------------------------------------------------------
-   Componentes generales
-   --------------------------------------------------------------------- */
+/* Componentes generales */
 .vista { animation: aparecer .22s ease-out; }
 @keyframes aparecer { from { opacity: 0; transform: translateY(6px); } }
 
@@ -256,9 +244,7 @@ input:focus-visible, select:focus-visible { outline: 3px solid rgba(32, 73, 196,
 
 .ayuda { margin: 8px 0 0; font-size: .8rem; color: var(--texto-3); }
 
-/* ---------------------------------------------------------------------
-   Inicio
-   --------------------------------------------------------------------- */
+/* Inicio */
 .indicadores {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -340,9 +326,7 @@ input:focus-visible, select:focus-visible { outline: 3px solid rgba(32, 73, 196,
 .flujo strong { display: block; font-size: .88rem; }
 .flujo small { color: var(--texto-3); font-size: .78rem; }
 
-/* ---------------------------------------------------------------------
-   Formularios
-   --------------------------------------------------------------------- */
+/* Formularios */
 .campo { display: flex; flex-direction: column; gap: 5px; min-width: 0; margin: 0; padding: 0; border: 0; }
 .campo > span, .campo legend, .etiqueta-campo { font-size: .82rem; font-weight: 600; color: var(--texto-2); padding: 0; }
 .campo b { color: var(--peligro); font-weight: 700; }
@@ -357,7 +341,7 @@ input[type="text"], input[type="search"], input[type="date"], select {
   background: var(--superficie);
   color: var(--texto);
   font: inherit;
-  font-size: 16px; /* evita el zoom automático en iOS */
+  font-size: 16px; /* evita el zoom en iOS */
   transition: border-color .15s, box-shadow .15s;
 }
 input::placeholder { color: #9aa1b8; }
@@ -447,9 +431,7 @@ input:focus, select:focus { outline: none; border-color: var(--primario); box-sh
 }
 .miniatura button .icono { font-size: 16px; }
 
-/* ---------------------------------------------------------------------
-   Filtros y resultados
-   --------------------------------------------------------------------- */
+/* Filtros y resultados */
 .filtros { display: grid; gap: 12px; }
 .buscador {
   display: flex;
@@ -528,9 +510,7 @@ input:focus, select:focus { outline: none; border-color: var(--primario); box-sh
 
 .cargando { opacity: .45; pointer-events: none; transition: opacity .15s; }
 
-/* ---------------------------------------------------------------------
-   Menú contextual, modales y avisos
-   --------------------------------------------------------------------- */
+/* Menú contextual, modales y avisos */
 .menu {
   position: fixed;
   z-index: 60;
@@ -628,9 +608,7 @@ input:focus, select:focus { outline: none; border-color: var(--primario); box-sh
 .prosa p { margin: 0 0 14px; }
 .prosa .ficha { margin-bottom: 14px; }
 
-/* =====================================================================
-   ≥ 560px · teléfonos grandes / tabletas pequeñas
-   ===================================================================== */
+/* Teléfonos grandes */
 @media (min-width: 560px) {
   .indicadores { grid-template-columns: repeat(4, 1fr); }
   .filtros__fila { grid-template-columns: 1fr 1fr 1fr; }
@@ -643,9 +621,7 @@ input:focus, select:focus { outline: none; border-color: var(--primario); box-sh
   .dialogo { max-width: 400px; border-radius: 18px; padding-bottom: 22px; }
 }
 
-/* =====================================================================
-   ≥ 760px · tableta: tabla de resultados
-   ===================================================================== */
+/* Tableta */
 @media (min-width: 760px) {
   body { font-size: 15.5px; }
   h1 { font-size: 1.7rem; }
@@ -693,9 +669,7 @@ input:focus, select:focus { outline: none; border-color: var(--primario); box-sh
   .rejilla-inicio { grid-template-columns: 1.5fr 1fr; align-items: start; }
 }
 
-/* =====================================================================
-   ≥ 960px · escritorio: menú lateral fijo, sin navegación inferior
-   ===================================================================== */
+/* Escritorio */
 @media (min-width: 960px) {
   .topbar { padding: 0 24px; height: 66px; --alto-topbar: 66px; }
   .marca img { width: 46px; height: 40px; }

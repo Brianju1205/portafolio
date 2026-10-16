@@ -1,8 +1,4 @@
-/* =====================================================================
-   Gestión de Documentos · UNACH ETDA
-   Lógica del cliente con jQuery: navegación por vistas, listado con
-   filtros, registro/edición, digitalización (foto → PDF) y visor de PDF.
-   ===================================================================== */
+// Lógica de la página con jQuery
 
 $(function () {
   'use strict';
@@ -12,24 +8,22 @@ $(function () {
   var ESTATUS = ['Recibido', 'En proceso', 'Atendido'];
   var CLASE_ESTATUS = { 'Recibido': 'recibido', 'En proceso': 'proceso', 'Atendido': 'atendido' };
 
-  // pdf.js necesita su worker para interpretar los PDF fuera del hilo principal.
+  // Worker de pdf.js
   if (window.pdfjsLib) {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   }
 
   var estado = {
     pagina: 1,
-    documentos: {},      // id → documento del listado actual (para menús y visor)
-    edicion: null,       // documento en edición, o null si es alta
-    fotos: [],           // imágenes capturadas que se convertirán en PDF
-    pdf: null,           // archivo PDF seleccionado
+    documentos: {},
+    edicion: null,
+    fotos: [],
+    pdf: null,
     visorId: null,
-    renderVisor: 0       // invalida renders de pdf.js al cerrar o cambiar de documento
+    renderVisor: 0
   };
 
-  // -------------------------------------------------------------------
-  //  Utilidades
-  // -------------------------------------------------------------------
+  // Utilidades
 
   function escapar(texto) {
     return $('<div>').text(texto == null ? '' : String(texto)).html();
@@ -62,7 +56,7 @@ $(function () {
     return API + 'pdf.php?id=' + encodeURIComponent(id) + (descargar ? '&descargar=1' : '');
   }
 
-  /** Petición a la API; rechaza con { mensaje, errores, campo } si falla. */
+  // Petición a la API
   function api(opciones) {
     return $.ajax($.extend({ dataType: 'json', cache: false }, opciones)).then(null, function (xhr) {
       var r = xhr.responseJSON || {};
@@ -85,10 +79,7 @@ $(function () {
     }, tipo === 'error' ? 5000 : 3200);
   }
 
-  // -------------------------------------------------------------------
-  //  Navegación entre vistas (hash: #inicio, #documentos, #buscar,
-  //  #nuevo, #editar/ID, #acerca)
-  // -------------------------------------------------------------------
+  // Navegación entre vistas
 
   function navegar() {
     var partes = (location.hash.replace('#', '') || 'inicio').split('/');
@@ -120,9 +111,7 @@ $(function () {
 
   $(window).on('hashchange', navegar);
 
-  // -------------------------------------------------------------------
-  //  Inicio
-  // -------------------------------------------------------------------
+  // Inicio
 
   function saludar() {
     var h = new Date().getHours();
@@ -156,15 +145,13 @@ $(function () {
     });
   }
 
-  // Los indicadores abren el listado ya filtrado por estatus.
+  // Los indicadores abren el listado filtrado
   $('#indicadores').on('click', '.indicador', function () {
     limpiarFiltros();
     $('#form-filtros [name="estatus"]').val($(this).data('estatus'));
   });
 
-  // -------------------------------------------------------------------
-  //  Listado, búsqueda y filtros
-  // -------------------------------------------------------------------
+  // Listado, búsqueda y filtros
 
   var $filtros = $('#form-filtros');
   var temporizadorBusqueda;
@@ -280,7 +267,7 @@ $(function () {
     $('.resultados')[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
-  /** Muestra los filtros activos como chips que se pueden quitar uno a uno. */
+  // Filtros activos
   function pintarChips(filtros) {
     var nombres = { q: 'Texto', estatus: 'Estatus', desde: 'Desde', hasta: 'Hasta', no_oficio: 'Oficio', asunto: 'Asunto', remitente: 'Remitente', destinatario: 'Destinatario' };
     var $c = $('#chips-filtros').empty();
@@ -332,9 +319,7 @@ $(function () {
     mostrarFiltrosAvanzados($('#filtros-avanzados').prop('hidden'));
   });
 
-  // -------------------------------------------------------------------
-  //  Menú de acciones por documento
-  // -------------------------------------------------------------------
+  // Menú de acciones por documento
 
   var $menu = $('#menu-acciones');
 
@@ -352,7 +337,7 @@ $(function () {
 
     $menu.html(html).removeAttr('hidden');
 
-    // Se posiciona junto al botón sin salirse de la pantalla.
+    // Posición del menú
     var r = boton.getBoundingClientRect();
     var ancho = $menu.outerWidth(), alto = $menu.outerHeight();
     var izquierda = Math.max(8, Math.min(r.right - ancho, window.innerWidth - ancho - 8));
@@ -379,9 +364,7 @@ $(function () {
   });
   $(window).on('resize scroll', cerrarMenu);
 
-  // -------------------------------------------------------------------
-  //  Estatus y eliminación
-  // -------------------------------------------------------------------
+  // Estatus y eliminación
 
   function cambiarEstatus(id, nuevo) {
     return api({ url: API + 'documentos.php', method: 'POST', data: { accion: 'estatus', id: id, estatus: nuevo } })
@@ -427,9 +410,7 @@ $(function () {
     if (ruta === 'documentos' || ruta === 'buscar') cargarDocumentos();
   }
 
-  // -------------------------------------------------------------------
-  //  Modales
-  // -------------------------------------------------------------------
+  // Modales
 
   var focoPrevio = null;
 
@@ -460,10 +441,7 @@ $(function () {
     if ($abierto.length) cerrarModal('#' + $abierto.attr('id'));
   });
 
-  // -------------------------------------------------------------------
-  //  Visor del documento (pdf.js dibuja cada página en un canvas, así el
-  //  PDF se consulta dentro de la plataforma también en móviles)
-  // -------------------------------------------------------------------
+  // Visor del PDF
 
   $(document).on('click', '[data-ver]', function (e) {
     e.preventDefault();
@@ -531,7 +509,7 @@ $(function () {
       var anchoDisponible = Math.min($contenedor.width() || 600, 900);
       var escalaPantalla = window.devicePixelRatio || 1;
 
-      // Las páginas se dibujan en orden, una tras otra.
+      // Dibuja las páginas en orden
       var cadena = Promise.resolve();
       for (var n = 1; n <= pdf.numPages; n++) {
         (function (numero) {
@@ -557,9 +535,7 @@ $(function () {
     });
   }
 
-  // -------------------------------------------------------------------
-  //  Formulario de registro / edición
-  // -------------------------------------------------------------------
+  // Formulario de registro / edición
 
   var $form = $('#form-documento');
   var sugerencias = { remitente: {}, destinatario: {} };
@@ -616,7 +592,7 @@ $(function () {
       .always(function () { $form.removeClass('cargando'); });
   }
 
-  /** Resume en pantalla lo que se va a guardar: fotos, PDF o el PDF actual. */
+  // Muestra el archivo adjunto
   function pintarAdjunto() {
     var $a = $('#adjunto');
     if (estado.fotos.length) {
@@ -701,7 +677,7 @@ $(function () {
     $(this).closest('.campo').removeClass('campo--invalido').find('.campo__error').text('');
   });
 
-  /** Validación en el cliente (el servidor vuelve a validar todo). */
+  // Validación del formulario
   function validarFormulario() {
     limpiarErrores();
     var valido = true;
@@ -762,14 +738,14 @@ $(function () {
       });
   });
 
-  /** Devuelve (promesa) el PDF a subir: el elegido, uno generado de fotos, o null. */
+  // Obtiene el PDF a subir
   function obtenerPdfAdjunto($texto) {
     if (estado.pdf) return $.Deferred().resolve(estado.pdf).promise();
     if (!estado.fotos.length) return $.Deferred().resolve(null).promise();
 
     $texto.text('Generando PDF…');
     var d = $.Deferred();
-    // Si el PDF excede el límite, se reintenta con menor resolución y calidad.
+    // Si pesa mucho se baja la calidad
     generarPdf(estado.fotos, 1800, 0.78)
       .then(function (pdf) { return pdf.size <= PDF_MAXIMO ? pdf : generarPdf(estado.fotos, 1300, 0.6); })
       .then(function (pdf) { return pdf.size <= PDF_MAXIMO ? pdf : generarPdf(estado.fotos, 1000, 0.5); })
@@ -785,11 +761,9 @@ $(function () {
     return d.promise();
   }
 
-  // -------------------------------------------------------------------
-  //  Digitalización: fotos → PDF (jsPDF)
-  // -------------------------------------------------------------------
+  // Digitalización: fotos → PDF (jsPDF)
 
-  /** Carga la imagen (respetando la orientación de la cámara) y crea su miniatura. */
+  // Carga la foto y su miniatura
   function prepararImagen(archivo) {
     return new Promise(function (resolver, rechazar) {
       var url = URL.createObjectURL(archivo);
@@ -814,7 +788,7 @@ $(function () {
     return canvas.toDataURL('image/jpeg', calidad);
   }
 
-  /** Une las fotos en un PDF tamaño carta, una página por foto, ajustada al margen. */
+  // Une las fotos en un PDF
   function generarPdf(fotos, ladoMaximo, calidad) {
     return new Promise(function (resolver) {
       var jsPDF = window.jspdf.jsPDF;
@@ -840,8 +814,6 @@ $(function () {
     });
   }
 
-  // -------------------------------------------------------------------
-  //  Arranque
-  // -------------------------------------------------------------------
+  // Arranque
   navegar();
 });

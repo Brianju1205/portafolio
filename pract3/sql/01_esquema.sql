@@ -1,8 +1,4 @@
--- =====================================================================
---  Sistema de Gestión de Documentos de una Oficina
---  UNACH · ETDA · Campus IV Tapachula
---  Script 1/2: creación de la base de datos, tablas e índices (MySQL 8)
--- =====================================================================
+-- Base de datos de la práctica 3
 
 SET NAMES utf8mb4;
 
@@ -12,9 +8,7 @@ CREATE DATABASE IF NOT EXISTS gestion_documentos
 
 USE gestion_documentos;
 
--- ---------------------------------------------------------------------
---  documentos: datos de registro de cada oficio recibido
--- ---------------------------------------------------------------------
+-- documentos: datos de cada oficio
 CREATE TABLE IF NOT EXISTS documentos (
   id_documento   INT UNSIGNED  NOT NULL AUTO_INCREMENT,
   no_oficio      VARCHAR(50)   NOT NULL,
@@ -34,11 +28,7 @@ CREATE TABLE IF NOT EXISTS documentos (
   KEY idx_documentos_destinatario (destinatario)
 ) ENGINE = InnoDB;
 
--- ---------------------------------------------------------------------
---  documentos_archivos: contenido binario del PDF (1:1 con documentos).
---  Solo se usa en servidores sin disco persistente (Vercel). En XAMPP o
---  Docker los PDF se guardan en la carpeta pdf/ y aquí no queda nada.
--- ---------------------------------------------------------------------
+-- documentos_archivos: PDF guardado en la BD (solo en Vercel)
 CREATE TABLE IF NOT EXISTS documentos_archivos (
   id_documento INT UNSIGNED NOT NULL,
   contenido    MEDIUMBLOB   NOT NULL,

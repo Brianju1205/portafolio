@@ -1,20 +1,11 @@
 <?php
-/**
- * API de documentos.
- *
- *   GET  documentos.php?id=5                      → detalle de un documento
- *   GET  documentos.php?q=&estatus=&desde=&hasta=…→ listado filtrado y paginado
- *   POST documentos.php  accion=guardar  (multipart, id opcional) → alta / edición
- *   POST documentos.php  accion=estatus  id, estatus              → cambio de estatus
- *   POST documentos.php  accion=eliminar id                       → baja
- */
+// API de documentos: listar, ver, guardar, cambiar estatus y eliminar
 
 declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-// Columnas devueltas al frontend (el binario del PDF nunca se incluye).
-// tamano_bytes viene de la BD (Vercel) o del archivo en pdf/ (ver normalizar).
+// Columnas que se envían a la página
 const COLUMNAS = 'd.id_documento, d.no_oficio, d.fecha, d.asunto, d.remitente, d.destinatario,
                   d.estatus, d.archivo_pdf, d.creado_en, d.actualizado_en, a.tamano_bytes';
 
@@ -32,9 +23,7 @@ match ($_POST['accion'] ?? '') {
     default    => fallar('Acción no válida.'),
 };
 
-// ---------------------------------------------------------------------
-//  Consultas
-// ---------------------------------------------------------------------
+// Consultas
 
 function obtenerDocumento(int $id): never
 {
@@ -57,14 +46,7 @@ function buscarPorId(int $id): ?array
     return $fila === false ? null : normalizar($fila);
 }
 
-/**
- * Listado con filtros combinables:
- *   q            texto libre en oficio, asunto, remitente o destinatario
- *   no_oficio, asunto, remitente, destinatario  filtros por campo
- *   estatus      Recibido | En proceso | Atendido
- *   desde/hasta  rango de fechas (AAAA-MM-DD)
- *   pagina, por_pagina
- */
+// Listado con filtros y paginación
 function listarDocumentos(array $entrada): never
 {
     $condiciones = [];
@@ -79,7 +61,7 @@ function listarDocumentos(array $entrada): never
     foreach (['no_oficio', 'asunto', 'remitente', 'destinatario'] as $campo) {
         $valor = textoFiltro($entrada, $campo);
         if ($valor !== '') {
-            $condiciones[] = "d.$campo LIKE ?"; // $campo proviene de la lista blanca anterior
+            $condiciones[] = "d.$campo LIKE ?";
             $parametros[] = comodin($valor);
         }
     }
@@ -120,7 +102,7 @@ function listarDocumentos(array $entrada): never
               LEFT JOIN documentos_archivos a ON a.id_documento = d.id_documento
               $where
              ORDER BY d.fecha DESC, d.id_documento DESC
-             LIMIT $porPagina OFFSET $desplazamiento"; // enteros ya validados
+             LIMIT $porPagina OFFSET $desplazamiento";
     $stmt = db()->prepare($sql);
     $stmt->execute($parametros);
 
@@ -134,9 +116,7 @@ function listarDocumentos(array $entrada): never
     ]);
 }
 
-// ---------------------------------------------------------------------
-//  Altas, cambios y bajas
-// ---------------------------------------------------------------------
+// Altas, cambios y bajas
 
 function guardarDocumento(array $entrada, ?array $archivo): never
 {
@@ -188,7 +168,7 @@ function guardarDocumento(array $entrada, ?array $archivo): never
             $stmt->execute();
         }
 
-        // Si cambió el No. de Oficio, el archivo de la carpeta cambia de nombre.
+        // Si cambió el No. de Oficio se renombra el archivo
         if ($anterior !== null && $anterior !== $datos['archivo_pdf'] && is_file(rutaPdf($anterior))) {
             $pdf === null ? rename(rutaPdf($anterior), rutaPdf($datos['archivo_pdf'])) : unlink(rutaPdf($anterior));
         }
@@ -227,7 +207,7 @@ function eliminarDocumento(array $entrada): never
 
     $documento = buscarPorId($id) ?? fallar('El documento no existe.', 404);
 
-    // En la BD el PDF se elimina en cascada (fk_archivos_documento).
+    // En la BD el PDF se borra en cascada
     db()->prepare('DELETE FROM documentos WHERE id_documento = ?')->execute([$id]);
     if ($documento['archivo_pdf'] !== null && is_file(rutaPdf($documento['archivo_pdf']))) {
         unlink(rutaPdf($documento['archivo_pdf']));
@@ -235,11 +215,9 @@ function eliminarDocumento(array $entrada): never
     responder(['ok' => true, 'mensaje' => 'Documento eliminado.']);
 }
 
-// ---------------------------------------------------------------------
-//  Validación
-// ---------------------------------------------------------------------
+// Validación
 
-/** Valida los campos del formulario en el servidor; responde 422 si hay errores. */
+// Valida los campos del formulario
 function validarCampos(array $entrada): array
 {
     $reglas = [
@@ -278,7 +256,6 @@ function validarCampos(array $entrada): array
         fallar('Revisa los campos marcados.', 422, ['errores' => $errores]);
     }
 
-    // Orden de columnas usado por las sentencias INSERT/UPDATE.
     return [
         'no_oficio'    => $datos['no_oficio'],
         'fecha'        => $datos['fecha'],
@@ -289,7 +266,7 @@ function validarCampos(array $entrada): array
     ];
 }
 
-/** Valida tipo y tamaño del PDF subido y devuelve su contenido binario. */
+// Valida el PDF subido y devuelve su contenido
 function leerPdf(?array $archivo, bool $obligatorio): ?string
 {
     $error = $archivo['error'] ?? UPLOAD_ERR_NO_FILE;
@@ -308,7 +285,7 @@ function leerPdf(?array $archivo, bool $obligatorio): ?string
     }
 
     $contenido = file_get_contents($archivo['tmp_name']);
-    // Se valida la firma real del archivo, no solo la extensión que envía el cliente.
+    // Revisa que de verdad sea un PDF
     if ($contenido === false || !str_starts_with($contenido, '%PDF-')) {
         fallar('El archivo debe ser un PDF válido.', 422, ['errores' => ['archivo' => 'Solo se aceptan PDF.']]);
     }
@@ -326,13 +303,13 @@ function textoFiltro(array $entrada, string $clave): string
     return mb_substr(trim((string) ($entrada[$clave] ?? '')), 0, 100);
 }
 
-/** Escapa los comodines de LIKE para buscar el texto de forma literal. */
+// Prepara el texto para buscar con LIKE
 function comodin(string $texto): string
 {
     return '%' . addcslashes($texto, '\\%_') . '%';
 }
 
-/** Tipos consistentes para el frontend. */
+// Convierte los tipos de cada fila
 function normalizar(array $fila): array
 {
     $fila['id_documento'] = (int) $fila['id_documento'];

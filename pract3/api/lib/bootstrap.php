@@ -1,12 +1,5 @@
 <?php
-/**
- * Núcleo compartido de la API: configuración, conexión a MySQL (PDO)
- * y utilidades para responder en JSON.
- *
- * La configuración se lee de variables de entorno (Vercel, Docker) y, si
- * no existen, de api/config.local.php (XAMPP). Las credenciales nunca se
- * escriben en el código versionado.
- */
+// Configuración, conexión a MySQL y funciones comunes
 
 declare(strict_types=1);
 
@@ -15,26 +8,22 @@ error_reporting(E_ALL);
 date_default_timezone_set('America/Mexico_City');
 
 const ESTATUS_VALIDOS = ['Recibido', 'En proceso', 'Atendido'];
-const PDF_TAMANO_MAXIMO = 4 * 1024 * 1024; // 4 MB (límite de cuerpo de Vercel: 4.5 MB)
+const PDF_TAMANO_MAXIMO = 4 * 1024 * 1024; // 4 MB
 const CARPETA_PDF = __DIR__ . '/../../pdf';
 
-/**
- * Los PDF se guardan en la carpeta pdf/ cuando el servidor permite escribir
- * en ella (XAMPP, Docker). En Vercel el disco es de solo lectura, así que
- * se guardan en la tabla documentos_archivos.
- */
+// En XAMPP los PDF van a la carpeta pdf/; en Vercel, a la base de datos
 function guardarEnCarpeta(): bool
 {
     return is_dir(CARPETA_PDF) && is_writable(CARPETA_PDF);
 }
 
-/** Ruta del PDF dentro de la carpeta pdf/. */
+// Ruta del PDF en la carpeta pdf/
 function rutaPdf(string $nombre): string
 {
     return CARPETA_PDF . '/' . basename($nombre);
 }
 
-/** Devuelve la configuración de conexión a la base de datos. */
+// Datos de conexión a la base de datos
 function config(): array
 {
     static $config = null;
@@ -67,7 +56,7 @@ function config(): array
     return $config;
 }
 
-/** Conexión PDO única por petición, con sentencias preparadas reales. */
+// Conexión a MySQL
 function db(): PDO
 {
     static $pdo = null;
@@ -83,7 +72,7 @@ function db(): PDO
         PDO::ATTR_EMULATE_PREPARES   => false,
     ];
 
-    // Proveedores en la nube (TiDB Cloud, Aiven…) exigen conexión cifrada.
+    // Conexión segura para la base en la nube
     if ($c['ssl']) {
         $ca = rutaCertificadosCA();
         if ($ca !== null) {
@@ -96,7 +85,7 @@ function db(): PDO
     return $pdo;
 }
 
-/** PHP 8.4+ movió las constantes MySQL a Pdo\Mysql; se usa la que exista. */
+// Compatibilidad con PHP 8.4
 function atributoMysql(string $nombre): int
 {
     if (class_exists('Pdo\Mysql') && defined('Pdo\Mysql::' . $nombre)) {
@@ -105,14 +94,14 @@ function atributoMysql(string $nombre): int
     return constant('PDO::MYSQL_' . $nombre);
 }
 
-/** Busca el paquete de certificados raíz del sistema operativo. */
+// Busca los certificados del sistema
 function rutaCertificadosCA(): ?string
 {
     $candidatos = [
         getenv('DB_SSL_CA') ?: '',
-        '/etc/pki/tls/certs/ca-bundle.crt',       // Amazon Linux (Vercel)
-        '/etc/ssl/certs/ca-certificates.crt',     // Debian / Ubuntu
-        '/etc/ssl/cert.pem',                      // macOS / Alpine
+        '/etc/pki/tls/certs/ca-bundle.crt',
+        '/etc/ssl/certs/ca-certificates.crt',
+        '/etc/ssl/cert.pem',
     ];
     foreach ($candidatos as $ruta) {
         if ($ruta !== '' && is_file($ruta)) {
@@ -122,7 +111,7 @@ function rutaCertificadosCA(): ?string
     return null;
 }
 
-/** Envía una respuesta JSON y termina la ejecución. */
+// Responde en JSON
 function responder(array $datos, int $codigo = 200): never
 {
     http_response_code($codigo);
@@ -132,13 +121,13 @@ function responder(array $datos, int $codigo = 200): never
     exit;
 }
 
-/** Responde con un error legible para el usuario. */
+// Responde con un error
 function fallar(string $mensaje, int $codigo = 400, array $extra = []): never
 {
     responder(['ok' => false, 'error' => $mensaje] + $extra, $codigo);
 }
 
-/** Exige que la petición use alguno de los métodos indicados. */
+// Revisa el método de la petición
 function exigirMetodo(string ...$metodos): string
 {
     $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -149,14 +138,14 @@ function exigirMetodo(string ...$metodos): string
     return $metodo;
 }
 
-/** Lee un entero positivo de un arreglo de entrada, o null. */
+// Lee un número entero positivo
 function enteroPositivo(array $origen, string $clave): ?int
 {
     $valor = filter_var($origen[$clave] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
     return $valor === false ? null : $valor;
 }
 
-/** Cualquier excepción no controlada se devuelve como JSON genérico. */
+// Errores no controlados
 set_exception_handler(static function (Throwable $e): void {
     error_log('[gestion-documentos] ' . $e);
     $mensaje = $e instanceof PDOException

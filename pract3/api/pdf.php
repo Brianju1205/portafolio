@@ -1,13 +1,5 @@
 <?php
-/**
- * Entrega el PDF digitalizado de un documento.
- *
- *   GET pdf.php?id=5              → se muestra dentro del navegador (visor)
- *   GET pdf.php?id=5&descargar=1  → se descarga como archivo
- *
- * Primero se busca en la carpeta pdf/ (XAMPP, Docker) y, si no está ahí,
- * en la tabla documentos_archivos (Vercel).
- */
+// Muestra o descarga el PDF de un documento
 
 declare(strict_types=1);
 
@@ -36,7 +28,7 @@ if ($contenido === false || $contenido === null) {
     fallar('El documento no tiene PDF asociado.', 404);
 }
 
-// Si el navegador ya tiene esta versión, no se reenvía el archivo.
+// Evita reenviar el PDF si no cambió
 $etag = '"' . hash('sha256', $contenido) . '"';
 if (($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') === $etag) {
     http_response_code(304);

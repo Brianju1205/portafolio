@@ -1,9 +1,5 @@
 <?php
-/**
- * Indicadores para el panel de inicio: totales por estatus y últimos registros.
- *
- *   GET resumen.php
- */
+// Totales por estatus y últimos documentos
 
 declare(strict_types=1);
 
