@@ -1,5 +1,3 @@
-// Calculo del RFC de persona fisica (13 caracteres) segun el algoritmo del SAT
-
 const PARTICULAS = ['DE', 'DEL', 'LA', 'LAS', 'LOS', 'Y', 'MC', 'MAC', 'VON', 'VAN', 'DA', 'DAS', 'DER', 'DI', 'DIE', 'EL', 'LE', 'LES', 'MI'];
 const NOMBRES_COMUNES = ['JOSE', 'J', 'J.', 'MARIA', 'MA', 'MA.', 'M', 'M.'];
 const INCONVENIENTES = [
