@@ -14,6 +14,25 @@
       "src": "/pract3/api/.*",
       "status": 404,
       "dest": "/404"
+    },
+    {
+      "src": "/pract4",
+      "status": 308,
+      "headers": {
+        "Location": "/pract4/"
+      }
+    },
+    {
+      "src": "/pract4/",
+      "dest": "/pract4/plantilla/dist/index.html"
+    },
+    {
+      "src": "/pract4/(assets|demo)/(.*)",
+      "dest": "/pract4/plantilla/dist/$1/$2"
+    },
+    {
+      "src": "/pract4/favicon.ico",
+      "dest": "/pract4/plantilla/dist/favicon.ico"
     }
   ]
 }
