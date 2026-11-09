@@ -140,7 +140,7 @@ onMounted(() => dibujarCodigo(tarjeta.rfc));
                         <i class="pi pi-building-columns"></i>
                         <div>
                             <div class="id-card__company">UNACH</div>
-                            <div class="id-card__slogan">Facultad de Negocios</div>
+                            <div class="id-card__slogan">Escuela de Tecnologías Digitales Aplicadas</div>
                         </div>
                     </div>
 

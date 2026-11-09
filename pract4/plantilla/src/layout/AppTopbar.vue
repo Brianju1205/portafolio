@@ -13,7 +13,7 @@ const { toggleMenu, toggleDarkMode, isDarkTheme } = useLayout();
             </button>
             <router-link to="/" class="layout-topbar-logo">
                 <i class="pi pi-building-columns" style="font-size: 2rem; color: var(--primary-color)"></i>
-                <span class="leading-tight text-xl">Facultad de Negocios<br />UNACH</span>
+                <span class="leading-tight text-xl">Escuela de Tecnologías Digitales Aplicadas<br />UNACH</span>
             </router-link>
         </div>
 
