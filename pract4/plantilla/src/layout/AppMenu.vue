@@ -20,6 +20,11 @@ const model = ref([
                 label: 'Tarjeta Empleado',
                 icon: 'pi pi-fw pi-id-card',
                 to: '/tarjeta'
+            },
+            {
+                label: 'Punto de Venta',
+                icon: 'pi pi-fw pi-shopping-cart',
+                to: '/punto-venta'
             }
         ]
     },

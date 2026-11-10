@@ -19,6 +19,11 @@ const router = createRouter({
                     component: () => import('@/views/pages/TarjetaEmpleado.vue')
                 },
                 {
+                    path: '/punto-venta',
+                    name: 'puntoVenta',
+                    component: () => import('@/views/pages/PuntoVenta.vue')
+                },
+                {
                     path: '/uikit/formlayout',
                     name: 'formlayout',
                     component: () => import('@/views/uikit/FormLayout.vue')
