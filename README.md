@@ -13,5 +13,8 @@ https://briandev-portafolio.vercel.app/
 | 3 - Gestión de Documentos | `pract3/` |
 | 4 - Tarjeta Digital de Empleado | `pract4/` |
 | 5 - Punto de Venta | `pract4/plantilla/src/views/pages/PuntoVenta.vue` |
+| Proyecto Final - CañaData-IA | `proyectofinal/` |
 
 La práctica 5 está dentro del proyecto de la práctica 4, en la sección "Punto de Venta" del menú.
+
+El proyecto final se corre en local porque necesita Ollama con el modelo llama3.2:3b. También está en https://github.com/Brianju1205/proyectofinal

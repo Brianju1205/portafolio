@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CañaData-IA | Producción de Caña</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <header class="encabezado">
+        <div class="contenedor encabezado-contenido">
+            <div class="logo" aria-hidden="true">
+                <svg viewBox="0 0 48 48"><path d="M6 42V26l10-6v6l10-6v6l10-6v22z" fill="#fff" opacity=".9"/><path d="M12 30h4v4h-4zM22 30h4v4h-4zM32 30h4v4h-4z" fill="#14532d"/><path d="M40 42V8M40 14c-4-2-7-1-9 2M40 20c4-2 7-1 9 2" stroke="#a3e635" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+            </div>
+            <div class="encabezado-texto">
+                <h1>CañaData-IA</h1>
+                <p>Análisis y recomendaciones de la producción de caña de azúcar con IA local (Ollama + Llama 3B)</p>
+            </div>
+            <span id="estadoIa" class="estado-ia">Verificando IA...</span>
+        </div>
+    </header>
+
+    <main class="contenedor principal">
+        <section class="tarjeta formulario">
+            <h2 class="titulo-tarjeta azul">Consulta y recomendación</h2>
+            <form id="formConsulta" novalidate>
+                <label for="ingenio">Ingenio azucarero</label>
+                <select id="ingenio" name="ingenio">
+                    <option value="todos">Todos los ingenios</option>
+                </select>
+
+                <label for="zafra">Zafra (periodo)</label>
+                <select id="zafra" name="zafra">
+                    <option value="todas">Todas las zafras</option>
+                </select>
+
+                <label for="indicador">Indicador de análisis</label>
+                <select id="indicador" name="indicador"></select>
+
+                <label for="pregunta">Pregunta o solicitud</label>
+                <textarea id="pregunta" name="pregunta" rows="4" maxlength="500" placeholder="Ej. ¿Qué ingenios presentan mejor rendimiento de campo y cómo se comparan con el promedio histórico?"></textarea>
+                <div class="contador"><span id="contador">0</span>/500</div>
+                <p id="errorForm" class="error-form" role="alert"></p>
+
+                <div class="sugerencias">
+                    <span>Ejemplos:</span>
+                    <button type="button" class="chip" data-pregunta="¿Qué ingenios tuvieron el mejor rendimiento de campo durante la zafra 2025-2026?" data-zafra="ultima" data-indicador="rend_campo" data-ingenio="todos">Mejor rendimiento 2025-2026</button>
+                    <button type="button" class="chip" data-pregunta="¿Cómo ha cambiado el rendimiento de campo de este ingenio durante las últimas cinco zafras?" data-zafra="todas" data-indicador="rend_campo">Tendencia de un ingenio</button>
+                    <button type="button" class="chip" data-pregunta="¿Cuál fue el ingenio con mayor producción de azúcar durante esta zafra?" data-indicador="azucar_total" data-ingenio="todos">Mayor producción de azúcar</button>
+                    <button type="button" class="chip" data-pregunta="¿Qué ingenios presentan mejores indicadores para realizar un análisis comparativo?" data-ingenio="todos">Análisis comparativo</button>
+                    <button type="button" class="chip" data-pregunta="Genera una recomendación basada en los indicadores históricos disponibles.">Recomendación general</button>
+                </div>
+
+                <button type="submit" id="btnConsultar" class="boton">Consultar con IA</button>
+            </form>
+            <p class="nota">La respuesta se genera con IA local (Ollama + Llama 3B) usando datos históricos de producción de caña de azúcar de CONADESUCA. Los cálculos los hace el sistema, la IA solo los interpreta.</p>
+        </section>
+
+        <section class="resultado">
+            <div class="tarjeta">
+                <h2 class="titulo-tarjeta verde">Resultado del análisis</h2>
+                <div class="kpis">
+                    <div class="kpi"><span>Ingenios analizados</span><strong id="kpiIngenios">--</strong></div>
+                    <div class="kpi"><span id="kpiPromedioTitulo">Promedio</span><strong id="kpiPromedio">--</strong></div>
+                    <div class="kpi"><span>Mejor valor</span><strong id="kpiMejor">--</strong><small id="kpiMejorDetalle"></small></div>
+                    <div class="kpi"><span>Periodo analizado</span><strong id="kpiPeriodo" class="chico">--</strong></div>
+                </div>
+            </div>
+
+            <div class="tarjeta ia">
+                <h2 class="titulo-tarjeta morado">Recomendación de la IA <small id="modeloIa">(Llama 3B)</small></h2>
+                <div id="respuestaIa" class="respuesta-ia vacia">
+                    Selecciona los parámetros, escribe tu pregunta y presiona <b>Consultar con IA</b>.
+                </div>
+                <p id="notas" class="notas" hidden></p>
+                <p class="aviso-datos">Esta recomendación se basa únicamente en los datos históricos que el sistema calculó y envió al modelo de IA. <a href="#" id="verContexto">Ver datos enviados a la IA</a></p>
+                <pre id="contexto" class="contexto" hidden></pre>
+            </div>
+
+            <div class="dos-columnas">
+                <div class="tarjeta">
+                    <h2 class="titulo-tarjeta">Ranking de ingenios</h2>
+                    <div class="tabla-scroll">
+                        <table id="tablaRanking">
+                            <thead><tr><th>#</th><th>Ingenio</th><th class="num">Valor</th><th class="num">vs prom.</th></tr></thead>
+                            <tbody><tr><td colspan="4" class="vacio">Sin datos</td></tr></tbody>
+                        </table>
+                    </div>
+                    <p id="posicion" class="posicion"></p>
+                </div>
+                <div class="tarjeta">
+                    <h2 class="titulo-tarjeta">Histórico por zafra</h2>
+                    <div id="grafica" class="grafica"><p class="vacio">Sin datos</p></div>
+                    <p id="tendencia" class="posicion"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="pie">
+        <div class="contenedor">
+            Datos: <a href="https://www.datos.gob.mx/dataset/avance_produccion_cana_azucar_infocana" target="_blank" rel="noopener">Avance de la producción de caña y azúcar (Infocaña) - CONADESUCA</a>
+            · <span id="infoArchivos"></span>
+        </div>
+    </footer>
+
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
